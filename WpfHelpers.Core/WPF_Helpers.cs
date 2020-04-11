@@ -1,9 +1,26 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace WpfHelperClasses.Core {
 
     public static class WPF_ControlHelpers {
+
+
+        #region Window Helpers
+
+        /// <summary>
+        /// Centers child window over parent. Call at end of child WindowRendered event
+        /// </summary>
+        /// <param name="parent">The parent window</param>
+        /// <param name="child">The child to center</param>
+        public static void CenterChild(Window parent, Window child) {
+            child.Left = parent.Left + ((parent.Width - child.ActualWidth) / 2.0);
+            child.Top = parent.Top + ((parent.Height - child.ActualHeight) / 2.0);
+        }
+
+        #endregion
+
 
         /// <summary>Call at class startup before buttons are rendered and before content change</summary>
         /// <param name="buttons"></param>
