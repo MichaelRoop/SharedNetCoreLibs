@@ -19,6 +19,14 @@ namespace WpfHelperClasses.Core {
             child.Top = parent.Top + ((parent.Height - child.ActualHeight) / 2.0);
         }
 
+
+        /// <summary>Center the calling window to its parent</summary>
+        /// <param name="child">The child to center</param>
+        /// <param name="parent">The parent window</param>
+        public static void CenterToParent( this Window child, Window parent) {
+            CenterChild(parent, child);
+        }
+
         #endregion
 
 
