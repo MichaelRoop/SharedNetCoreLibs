@@ -70,5 +70,11 @@ namespace WpfHelperClasses.Core {
             }
         }
 
+
+        public static void Collapse(Label label) {
+            label.Visibility = Visibility.Collapsed;
+        }
+
+
     }
 }
