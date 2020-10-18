@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedNetCoreLibs", "SharedNetCoreLibs\SharedNetCoreLibs.csproj", "{B58B7798-FF93-4E6D-B85C-E87C80AEE3D4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedNetCoreLibs", "SharedNetCoreLibs\SharedNetCoreLibs.csproj", "{B58B7798-FF93-4E6D-B85C-E87C80AEE3D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfHelperClasses.Core", "WpfHelpers.Core\WpfHelperClasses.Core.csproj", "{002B8D88-112B-4F72-89A5-65D5EF0BFAED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHelperClasses.Core", "WpfHelpers.Core\WpfHelperClasses.Core.csproj", "{002B8D88-112B-4F72-89A5-65D5EF0BFAED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationStack.Net", "..\SharedNetLibs\CommunicationStack.Net\CommunicationStack.Net.csproj", "{CE2E93BB-57FF-4179-A7C5-035CE49FA2F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communications.UWP.Core", "Communications.UWP.Core\Communications.UWP.Core.csproj", "{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{002B8D88-112B-4F72-89A5-65D5EF0BFAED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{002B8D88-112B-4F72-89A5-65D5EF0BFAED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{002B8D88-112B-4F72-89A5-65D5EF0BFAED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE2E93BB-57FF-4179-A7C5-035CE49FA2F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE2E93BB-57FF-4179-A7C5-035CE49FA2F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE2E93BB-57FF-4179-A7C5-035CE49FA2F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE2E93BB-57FF-4179-A7C5-035CE49FA2F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
