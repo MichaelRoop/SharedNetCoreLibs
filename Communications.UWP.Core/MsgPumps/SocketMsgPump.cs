@@ -57,6 +57,14 @@ namespace Communications.UWP.Core.MsgPumps {
                         paramsObj.ServiceName,
                         paramsObj.ProtectionLevel);
 
+                    StreamSocketInformation i = this.socket.Information;
+                    this.log.Info("ConnectAsync", () => string.Format(
+                        "Connected to socket Local {0}:{1} Remote {2}:{3} - {4} : Protection:{5}",
+                        i.LocalAddress, i.LocalPort, 
+                        i.RemoteHostName, i.RemotePort, i.RemoteServiceName, i.ProtectionLevel));
+
+
+
                     this.writer = new DataWriter(this.socket.OutputStream);
                     this.writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
 
