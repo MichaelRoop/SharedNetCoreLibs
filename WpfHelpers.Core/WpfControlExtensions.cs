@@ -21,15 +21,21 @@ namespace WpfHelperClasses.Core {
         // Anything derived from UIElement, not just controls
 
         public static void Collapse(this UIElement uiElement) {
-            uiElement.Visibility = Visibility.Collapsed;
+            if (uiElement != null) {
+                uiElement.Visibility = Visibility.Collapsed;
+            }
         }
 
         public static void Show(this UIElement uiElement) {
-            uiElement.Visibility = Visibility.Visible;
+            if (uiElement != null) {
+                uiElement.Visibility = Visibility.Visible;
+            }
         }
 
         public static void Hide(this UIElement uiElement) {
-            uiElement.Visibility = Visibility.Hidden;
+            if (uiElement != null) {
+                uiElement.Visibility = Visibility.Hidden;
+            }
         }
 
 
@@ -52,9 +58,11 @@ namespace WpfHelperClasses.Core {
         /// <param name="source">The source list to attach</param>
         /// <param name="item">The item to add</param>
         public static void Add<T>(this Selector selector, List<T> source, T item) {
-            selector.ItemsSource = null;
-            source.Add(item);
-            selector.ItemsSource = source;
+            if (selector != null) {
+                selector.ItemsSource = null;
+                source.Add(item);
+                selector.ItemsSource = source;
+            }
         }
 
 
@@ -64,11 +72,13 @@ namespace WpfHelperClasses.Core {
         /// <param name="source">The source list to attach</param>
         /// <param name="item">The list of items to add</param>
         public static void Add<T>(this Selector selector, List<T> source, List<T> items) {
-            selector.ItemsSource = null;
-            foreach (T item in items) {
-                source.Add(item);
+            if (selector != null) {
+                selector.ItemsSource = null;
+                foreach (T item in items) {
+                    source.Add(item);
+                }
+                selector.ItemsSource = source;
             }
-            selector.ItemsSource = source;
         }
 
 
@@ -79,27 +89,33 @@ namespace WpfHelperClasses.Core {
         /// <param name="scrollViewer">The list scroll viewer</param>
         /// <param name="maxItems">Maximum items allowed before removing oldest</param>
         public static void AddAndScroll<T>(this Selector selector, T item, ScrollViewer scrollViewer, int maxItems) {
-            if (maxItems > 0) {
-                if (selector.Items.Count > maxItems) {
-                    selector.Items.RemoveAt(0);
+            if (selector != null) {
+                if (maxItems > 0) {
+                    if (selector.Items.Count > maxItems) {
+                        selector.Items.RemoveAt(0);
+                    }
+                    selector.Items.Add(item);
+                    scrollViewer.ScrollToBottom();
                 }
-                selector.Items.Add(item);
-                scrollViewer.ScrollToBottom();
             }
         }
 
 
         public static void Clear<T>(this Selector selector, List<T> source) {
-            selector.ItemsSource = null;
-            source.Clear();
-            selector.ItemsSource = source;
+            if (selector != null) {
+                selector.ItemsSource = null;
+                source.Clear();
+                selector.ItemsSource = source;
+            }
         }
 
 
         public static void SetNewSource<T>(this Selector selector, ref List<T> source, List<T> newSource) {
-            selector.ItemsSource = null;
-            source = newSource;
-            selector.ItemsSource = source;
+            if (selector != null) {
+                selector.ItemsSource = null;
+                source = newSource;
+                selector.ItemsSource = source;
+            }
         }
 
 
@@ -109,12 +125,14 @@ namespace WpfHelperClasses.Core {
         /// <param name="onFound">Invoked when selected item found</param>
         /// <param name="onNone">Invoked when none selected or wrong type</param>
         public static void GetSelected<T>(this Selector selector, Action<T> onFound, Action onNone) where T:class {
-            T item = selector.SelectedItem as T;
-            if (item != null) {
-                onFound.Invoke(item);
-            }
-            else {
-                onNone.Invoke();
+            if (selector != null) {
+                T item = selector.SelectedItem as T;
+                if (item != null) {
+                    onFound.Invoke(item);
+                }
+                else {
+                    onNone.Invoke();
+                }
             }
         }
 
@@ -124,12 +142,25 @@ namespace WpfHelperClasses.Core {
         /// <param name="selector">The target ListBox or other</param>
         /// <param name="onFound">Invoked when selected item found</param>
         public static void GetSelected<T>(this Selector selector, Action<T> onFound) where T : class {
-            selector.GetSelected<T>((item) => {
-                onFound.Invoke(item);
-            },
-            () => {
-                // Don't care
-            });
+            if (selector != null) {
+                selector.GetSelected<T>((item) => {
+                    onFound.Invoke(item);
+                },
+                () => {
+                    // Don't care
+                });
+            }
+        }
+
+
+        /// <summary>Safe count of items in selector</summary>
+        /// <param name="selector">Selector derived objects such as List</param>
+        /// <returns>The number of items. 0 if not initialized</returns>
+        public static int Count(this Selector selector) {
+            if (selector != null && selector.Items != null) {
+                return selector.Items.Count;
+            }
+            return 0;
         }
 
         #endregion
