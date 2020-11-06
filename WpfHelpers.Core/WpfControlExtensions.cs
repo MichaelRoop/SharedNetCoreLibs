@@ -39,6 +39,18 @@ namespace WpfHelperClasses.Core {
         }
 
 
+        public static void ToggleVisibility(this UIElement uiElement) {
+            if (uiElement != null) {
+                if (uiElement.Visibility == Visibility.Collapsed) {
+                    uiElement.Show();
+                }
+                else {
+                    uiElement.Collapse();
+                }
+            }
+        }
+
+
         #endregion
 
         #region Selector based such as ListBox, ComboBox
