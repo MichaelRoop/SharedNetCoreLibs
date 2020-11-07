@@ -5,10 +5,11 @@ using Windows.Storage.Streams;
 namespace Communications.UWP.Core.MsgPumps {
 
     /// <summary>
-    /// Derived instance of SocketMsgPumpBase for Ethernet that passes its 
+    /// Derived instance of SocketMsgPumpBase for Wifi that passes its 
     /// static members to base to enable base to share with async methods
     /// </summary>
-    public class SocketMsgPumpEthernet : SocketMsgPumpBase {
+    public class SocketMsgPumpWifi : SocketMsgPumpBase {
+
 
         #region static members
 
@@ -64,6 +65,7 @@ namespace Communications.UWP.Core.MsgPumps {
         }
 
         #endregion
+
 
     }
 }

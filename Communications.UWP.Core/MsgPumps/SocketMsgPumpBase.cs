@@ -105,6 +105,7 @@ namespace Communications.UWP.Core.MsgPumps {
 
                             this.GetWriter().WriteBytes(msg);
                             await this.GetSocket().OutputStream.WriteAsync(this.GetWriter().DetachBuffer());
+                            await this.GetSocket().OutputStream.FlushAsync();
                         }
                         catch (Exception e) {
                             this.log.Exception(9999, "", e);
@@ -146,11 +147,13 @@ namespace Communications.UWP.Core.MsgPumps {
                 while (continueReading) {
                     try {
                         int count = (int)await reader.LoadAsync(readBufferMaxSizer).AsTask(this.GetCancelToken().Token);
-                        this.log.Error(9, "received");
                         if (count > 0) {
-                            byte[] tmpBuff = new byte[count];
-                            reader.ReadBytes(tmpBuff);
-                            this.HandlerMsgReceived(this, tmpBuff);
+                            this.log.Error(9, "received");
+                            if (count > 0) {
+                                byte[] tmpBuff = new byte[count];
+                                reader.ReadBytes(tmpBuff);
+                                this.HandlerMsgReceived(this, tmpBuff);
+                            }
                         }
                     }
                     catch (TaskCanceledException) {
@@ -187,16 +190,24 @@ namespace Communications.UWP.Core.MsgPumps {
                 #region Close Writer and Reader
                 DataWriter w = this.GetWriter();
                 if (w != null) {
-                    try { w.DetachStream(); }
-                    catch (Exception e) { this.log.Exception(9999, "", e); }
+                    try { 
+                        w.DetachStream();
+                    }
+                    catch (Exception e) { 
+                        this.log.Exception(9999, "", e); 
+                    }
                     w.Dispose();
                     this.SetWriter(null);
                 }
 
                 DataReader r = this.GetReader();
                 if (r != null) {
-                    try { r.DetachStream(); }
-                    catch (Exception e) { this.log.Exception(9999, "", e); }
+                    try { 
+                        r.DetachStream(); 
+                    }
+                    catch (Exception e) { 
+                        this.log.Exception(9999, "", e); 
+                    }
                     r.Dispose();
                     this.SetReader(null);
                 }
