@@ -49,50 +49,47 @@ namespace Communications.UWP.Core.MsgPumps {
 
         public async Task ConnectAsync2(SocketMsgPumpConnectData paramsObj) {
             this.TearDown(true);
-            //return Task.Run( () => {
-                try {
-                    this.log.Info("ConnectAsync", () => string.Format(
-                        "Host:{0} Service:{1}", paramsObj.RemoteHostName, paramsObj.ServiceName));
+            try {
+                this.log.Info("ConnectAsync", () => string.Format(
+                    "Host:{0} Service:{1}", paramsObj.RemoteHostName, paramsObj.ServiceName));
 
-                    this.socket = new StreamSocket();
-                    await socket.ConnectAsync(
-                        new HostName(paramsObj.RemoteHostName),
-                        paramsObj.ServiceName,
-                        paramsObj.ProtectionLevel);
+                this.socket = new StreamSocket();
+                await socket.ConnectAsync(
+                    new HostName(paramsObj.RemoteHostName),
+                    paramsObj.ServiceName,
+                    paramsObj.ProtectionLevel);
 
-                    StreamSocketInformation i = this.socket.Information;
-                    this.log.Info("ConnectAsync", () => string.Format(
-                        "Connected to socket Local {0}:{1} Remote {2}:{3} - {4} : Protection:{5}",
-                        i.LocalAddress, i.LocalPort,
-                        i.RemoteHostName, i.RemotePort, i.RemoteServiceName, i.ProtectionLevel));
+                StreamSocketInformation i = this.socket.Information;
+                this.log.Info("ConnectAsync", () => string.Format(
+                    "Connected to socket Local {0}:{1} Remote {2}:{3} - {4} : Protection:{5}",
+                    i.LocalAddress, i.LocalPort,
+                    i.RemoteHostName, i.RemotePort, i.RemoteServiceName, i.ProtectionLevel));
 
-                    this.writer = new DataWriter(this.socket.OutputStream);
-                    this.writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+                this.writer = new DataWriter(this.socket.OutputStream);
+                this.writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
 
-                    this.reader = new DataReader(socket.InputStream);
-                    this.reader.InputStreamOptions = InputStreamOptions.Partial;
-                    this.reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
-                    this.reader.ByteOrder = ByteOrder.LittleEndian;
+                this.reader = new DataReader(socket.InputStream);
+                this.reader.InputStreamOptions = InputStreamOptions.Partial;
+                this.reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+                this.reader.ByteOrder = ByteOrder.LittleEndian;
 
-                    CancellationTokenSource readCancelationToken = this.SetCancelToken(new CancellationTokenSource());
-                    readCancelationToken.Token.ThrowIfCancellationRequested();
-                    continueReading = true;
+                this.CancelToken = new CancellationTokenSource();
+                this.CancelToken.Token.ThrowIfCancellationRequested();
+                continueReading = true;
 
-                    this.Connected = true;
-                    this.LaunchReadTask(paramsObj.MaxReadBufferSize);
+                this.Connected = true;
+                this.LaunchReadTask(paramsObj.MaxReadBufferSize);
 
-                    this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.Connected));
-                }
-                catch (Exception e) {
-                    this.log.Exception(9999, "Connect Asyn Error", e);
-                    this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.ConnectionFailure));
-                }
-            //});          
-
+                this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.Connected));
+            }
+            catch (Exception e) {
+                this.log.Exception(9999, "Connect Asyn Error", e);
+                this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.ConnectionFailure));
+            }
         }
 
 
-    public void ConnectAsync(SocketMsgPumpConnectData paramsObj) {
+        public void ConnectAsync(SocketMsgPumpConnectData paramsObj) {
             this.log.InfoEntry("ConnectAsync");
             this.TearDown(true);
             Task.Run(async () => {
@@ -120,8 +117,8 @@ namespace Communications.UWP.Core.MsgPumps {
                     this.reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
                     this.reader.ByteOrder = ByteOrder.LittleEndian;
 
-                    CancellationTokenSource readCancelationToken = this.SetCancelToken(new CancellationTokenSource());
-                    readCancelationToken.Token.ThrowIfCancellationRequested();
+                    this.CancelToken = new CancellationTokenSource();
+                    this.CancelToken.Token.ThrowIfCancellationRequested();
                     continueReading = true;
 
                     this.Connected = true;
@@ -168,30 +165,27 @@ namespace Communications.UWP.Core.MsgPumps {
             }
         }
 
-        #region Abstract methods
-
-        /// <summary>Derived returns static cancelation token to persiste in async methods</summary>
-        /// <returns>The cancelation token</returns>
-        protected abstract CancellationTokenSource GetCancelToken();
-
+        #region Abstract Properties
 
         /// <summary>Derived returns static AutoResetEvent to persiste in async methods</summary>
         /// <returns>The reset event</returns>
         protected abstract ManualResetEvent ReadFinishEvent { get; }
 
-        protected abstract CancellationTokenSource SetCancelToken(CancellationTokenSource tokenSource);
+        /// <summary>Derived returns static cancelation token to persiste in async methods</summary>
+        /// <returns>The cancelation token</returns>
+        protected abstract CancellationTokenSource CancelToken { get; set; }
 
         #endregion
 
         #region Private
 
         private void LaunchReadTask(uint readBufferMaxSizer) {
+            this.log.InfoEntry("DoReadTask +++");
             Task.Run(async () => {
-                this.log.InfoEntry("DoReadTask +++");
                 this.ReadFinishEvent.Reset();
                 while (continueReading) {
                     try {
-                        int count = (int)await this.reader.LoadAsync(readBufferMaxSizer).AsTask(this.GetCancelToken().Token);
+                        int count = (int)await this.reader.LoadAsync(readBufferMaxSizer).AsTask(this.CancelToken.Token);
                         if (count > 0) {
                             this.log.Error(9, "received");
                             if (count > 0) {
@@ -214,51 +208,48 @@ namespace Communications.UWP.Core.MsgPumps {
 
                 // Must clean up the reader, writer, socket here since they were 
                 // created in the async space
-                await this.CleanUpAsyncObjects();
+                this.CleanUpAsyncObjects();
             });
         }
 
 
-        private Task CleanUpAsyncObjects() {
-            Task t = Task.Run(() => {
-                try {
-                    if (this.Connected) {
-                        if (this.writer != null) {
-                            try {
-                                this.writer.DetachStream();
-                            }
-                            catch (Exception e) {
-                                this.log.Exception(9999, "", e);
-                            }
-                            this.writer.Dispose();
-                            this.writer = null;
+        private void CleanUpAsyncObjects() {
+            try {
+                if (this.Connected) {
+                    if (this.writer != null) {
+                        try {
+                            this.writer.DetachStream();
                         }
-
-                        if (this.reader != null) {
-                            try {
-                                this.reader.DetachStream();
-                            }
-                            catch (Exception e) {
-                                this.log.Exception(9999, "", e);
-                            }
-                            this.reader.Dispose();
-                            this.reader = null;
+                        catch (Exception e) {
+                            this.log.Exception(9999, "", e);
                         }
-
-                        if (this.socket != null) {
-                            // The socket was closed so cannot cancel IO
-                            this.socket.Dispose();
-                            this.socket = null;
-                        }
-                        this.ReadFinishEvent.Set();
-                        this.Connected = false;
+                        this.writer.Dispose();
+                        this.writer = null;
                     }
+
+                    if (this.reader != null) {
+                        try {
+                            this.reader.DetachStream();
+                        }
+                        catch (Exception e) {
+                            this.log.Exception(9999, "", e);
+                        }
+                        this.reader.Dispose();
+                        this.reader = null;
+                    }
+
+                    if (this.socket != null) {
+                        // The socket was closed so cannot cancel IO
+                        this.socket.Dispose();
+                        this.socket = null;
+                    }
+                    this.ReadFinishEvent.Set();
+                    this.Connected = false;
                 }
-                catch (Exception e) {
-                    this.log.Exception(7777, "", e);
-                }
-            });
-            return t;
+            }
+            catch (Exception e) {
+                this.log.Exception(7777, "", e);
+            }
         }
 
 
@@ -268,11 +259,10 @@ namespace Communications.UWP.Core.MsgPumps {
                 #region Cancel Read Thread
                 if (this.Connected) {
                     continueReading = false;
-                    CancellationTokenSource tk = this.GetCancelToken();
-                    if (tk != null) {
-                        tk.Cancel();
-                        tk.Dispose();
-                        this.SetCancelToken(null);
+                    if (this.CancelToken != null) {
+                        this.CancelToken.Cancel();
+                        this.CancelToken.Dispose();
+                        this.CancelToken = null;
                         if (!this.ReadFinishEvent.WaitOne(2000)) {
                             this.log.Error(9999, "Timed out waiting for read cancelation");
                         }

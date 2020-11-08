@@ -21,20 +21,13 @@ namespace Communications.UWP.Core.MsgPumps {
 
 
         protected override ManualResetEvent ReadFinishEvent {
-            get {
-                return FINISH_READ_EVENT;
-            }
+            get { return FINISH_READ_EVENT; }
         }
 
 
-        protected override CancellationTokenSource GetCancelToken() {
-            return CANCEL_TOKEN;
-        }
-
-
-        protected override CancellationTokenSource SetCancelToken(CancellationTokenSource tokenSource) {
-            CANCEL_TOKEN = tokenSource;
-            return CANCEL_TOKEN;
+        protected override CancellationTokenSource CancelToken {
+            get { return CANCEL_TOKEN; }
+            set { CANCEL_TOKEN = value; }
         }
 
         #endregion
