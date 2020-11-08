@@ -17,7 +17,6 @@ namespace Communications.UWP.Core.MsgPumps {
 
         private ClassLog log = new ClassLog("SocketMsgPumpBase");
         private static bool continueReading = false;
-        private static uint readBufferMaxSizer = 256;
         private static bool isConnected = false;
 
         private StreamSocket socket = null;
@@ -57,7 +56,6 @@ namespace Communications.UWP.Core.MsgPumps {
                     this.log.Info("ConnectAsync", () => string.Format(
                         "Host:{0} Service:{1}", paramsObj.RemoteHostName, paramsObj.ServiceName));
 
-                    readBufferMaxSizer = paramsObj.MaxReadBufferSize;
                     this.socket = new StreamSocket();
                     await socket.ConnectAsync(
                         new HostName(paramsObj.RemoteHostName),
@@ -83,7 +81,7 @@ namespace Communications.UWP.Core.MsgPumps {
                     continueReading = true;
 
                     this.Connected = true;
-                    this.LaunchReadTask();
+                    this.LaunchReadTask(paramsObj.MaxReadBufferSize);
 
                     this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.Connected));
                 }
@@ -145,7 +143,7 @@ namespace Communications.UWP.Core.MsgPumps {
 
         #region Private
 
-        private void LaunchReadTask() {
+        private void LaunchReadTask(uint readBufferMaxSizer) {
             Task.Run(async () => {
                 this.log.InfoEntry("DoReadTask +++");
                 this.GetReadFinishEvent().Reset();
@@ -182,7 +180,6 @@ namespace Communications.UWP.Core.MsgPumps {
 
         private Task CleanUpAsyncObjects() {
             Task t = Task.Run(() => {
-                #region Close Writer and Reader
                 try {
                     if (this.Connected) {
                         if (this.writer != null) {
@@ -206,9 +203,7 @@ namespace Communications.UWP.Core.MsgPumps {
                             this.reader.Dispose();
                             this.reader = null;
                         }
-                        #endregion
 
-                        #region Close socket
                         if (this.socket != null) {
                             // The socket was closed so cannot cancel IO
                             this.socket.Dispose();
