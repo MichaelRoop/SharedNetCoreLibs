@@ -1,6 +1,4 @@
 ﻿using System.Threading;
-using Windows.Networking.Sockets;
-using Windows.Storage.Streams;
 
 namespace Communications.UWP.Core.MsgPumps {
 

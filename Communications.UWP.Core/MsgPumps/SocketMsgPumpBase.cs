@@ -48,8 +48,8 @@ namespace Communications.UWP.Core.MsgPumps {
 
 
         public async Task ConnectAsync2(SocketMsgPumpConnectData paramsObj) {
-            this.TearDown(true);
             try {
+                this.TearDown(true);
                 this.log.Info("ConnectAsync", () => string.Format(
                     "Host:{0} Service:{1}", paramsObj.RemoteHostName, paramsObj.ServiceName));
 
@@ -208,14 +208,21 @@ namespace Communications.UWP.Core.MsgPumps {
 
                 // Must clean up the reader, writer, socket here since they were 
                 // created in the async space
-                this.CleanUpAsyncObjects();
+                await this.CleanUpAsyncObjects();
             });
         }
 
 
-        private void CleanUpAsyncObjects() {
+        private async Task CleanUpAsyncObjects() {
             try {
                 if (this.Connected) {
+                    if (this.socket != null && false) {
+                        // Put false to keep it from firing. 
+                        //ObjectDisposedException : The object has been closed. (0x80000013)
+                        // Not sure how it is disposed.
+                        await this.socket.CancelIOAsync();
+                    }
+
                     if (this.writer != null) {
                         try {
                             this.writer.DetachStream();
@@ -239,12 +246,11 @@ namespace Communications.UWP.Core.MsgPumps {
                     }
 
                     if (this.socket != null) {
-                        // The socket was closed so cannot cancel IO
                         this.socket.Dispose();
                         this.socket = null;
                     }
-                    this.ReadFinishEvent.Set();
                     this.Connected = false;
+                    this.ReadFinishEvent.Set();
                 }
             }
             catch (Exception e) {
