@@ -19,13 +19,16 @@ namespace Communications.UWP.Core.MsgPumps {
 
         #region SocketMsgPumpBase overrides for base to use its statics
 
-        protected override CancellationTokenSource GetCancelToken() {
-            return CANCEL_TOKEN;
+
+        protected override ManualResetEvent ReadFinishEvent {
+            get {
+                return FINISH_READ_EVENT;
+            }
         }
 
 
-        protected override ManualResetEvent GetReadFinishEvent() {
-            return FINISH_READ_EVENT;
+        protected override CancellationTokenSource GetCancelToken() {
+            return CANCEL_TOKEN;
         }
 
 

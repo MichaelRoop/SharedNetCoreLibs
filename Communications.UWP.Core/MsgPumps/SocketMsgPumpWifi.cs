@@ -6,12 +6,16 @@ namespace Communications.UWP.Core.MsgPumps {
 
     /// <summary>
     /// Derived instance of SocketMsgPumpBase for Wifi that passes its 
-    /// static members to base to enable base to share with async methods
+    /// static members to base to enable base to share variables with 
+    /// its async methods
     /// </summary>
     public class SocketMsgPumpWifi : SocketMsgPumpBase {
 
 
         #region static members
+
+        // Must provide statics to kill the read thread since it is triggered from 
+        // a different thread in base async methods
 
         private static CancellationTokenSource CANCEL_TOKEN = null;
         private static ManualResetEvent FINISH_READ_EVENT = new ManualResetEvent(false);
@@ -20,13 +24,15 @@ namespace Communications.UWP.Core.MsgPumps {
 
         #region SocketMsgPumpBase overrides for base to use its statics
 
-        protected override CancellationTokenSource GetCancelToken() {
-            return CANCEL_TOKEN;
+        protected override ManualResetEvent ReadFinishEvent {
+            get {
+                return FINISH_READ_EVENT;
+            }
         }
 
 
-        protected override ManualResetEvent GetReadFinishEvent() {
-            return FINISH_READ_EVENT;
+        protected override CancellationTokenSource GetCancelToken() {
+            return CANCEL_TOKEN;
         }
 
 

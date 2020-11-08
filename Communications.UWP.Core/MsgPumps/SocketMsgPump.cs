@@ -216,6 +216,10 @@ namespace Communications.UWP.Core.MsgPumps {
             }
         }
 
+        public Task ConnectAsync2(SocketMsgPumpConnectData paramsObj) {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
     }

@@ -47,12 +47,56 @@ namespace Communications.UWP.Core.MsgPumps {
         public SocketMsgPumpBase() { }
 
 
+        public async Task ConnectAsync2(SocketMsgPumpConnectData paramsObj) {
+            this.TearDown(true);
+            //return Task.Run( () => {
+                try {
+                    this.log.Info("ConnectAsync", () => string.Format(
+                        "Host:{0} Service:{1}", paramsObj.RemoteHostName, paramsObj.ServiceName));
 
-        public void ConnectAsync(SocketMsgPumpConnectData paramsObj) {
+                    this.socket = new StreamSocket();
+                    await socket.ConnectAsync(
+                        new HostName(paramsObj.RemoteHostName),
+                        paramsObj.ServiceName,
+                        paramsObj.ProtectionLevel);
+
+                    StreamSocketInformation i = this.socket.Information;
+                    this.log.Info("ConnectAsync", () => string.Format(
+                        "Connected to socket Local {0}:{1} Remote {2}:{3} - {4} : Protection:{5}",
+                        i.LocalAddress, i.LocalPort,
+                        i.RemoteHostName, i.RemotePort, i.RemoteServiceName, i.ProtectionLevel));
+
+                    this.writer = new DataWriter(this.socket.OutputStream);
+                    this.writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+
+                    this.reader = new DataReader(socket.InputStream);
+                    this.reader.InputStreamOptions = InputStreamOptions.Partial;
+                    this.reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+                    this.reader.ByteOrder = ByteOrder.LittleEndian;
+
+                    CancellationTokenSource readCancelationToken = this.SetCancelToken(new CancellationTokenSource());
+                    readCancelationToken.Token.ThrowIfCancellationRequested();
+                    continueReading = true;
+
+                    this.Connected = true;
+                    this.LaunchReadTask(paramsObj.MaxReadBufferSize);
+
+                    this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.Connected));
+                }
+                catch (Exception e) {
+                    this.log.Exception(9999, "Connect Asyn Error", e);
+                    this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.ConnectionFailure));
+                }
+            //});          
+
+        }
+
+
+    public void ConnectAsync(SocketMsgPumpConnectData paramsObj) {
+            this.log.InfoEntry("ConnectAsync");
+            this.TearDown(true);
             Task.Run(async () => {
                 try {
-                    this.TearDown();
-                    this.log.InfoEntry("ConnectAsync");
                     this.log.Info("ConnectAsync", () => string.Format(
                         "Host:{0} Service:{1}", paramsObj.RemoteHostName, paramsObj.ServiceName));
 
@@ -94,7 +138,7 @@ namespace Communications.UWP.Core.MsgPumps {
         }
 
         public void Disconnect() {
-            this.TearDown();
+            this.TearDown(false);
         }
 
         public void WriteAsync(byte[] msg) {
@@ -133,9 +177,7 @@ namespace Communications.UWP.Core.MsgPumps {
 
         /// <summary>Derived returns static AutoResetEvent to persiste in async methods</summary>
         /// <returns>The reset event</returns>
-        protected abstract ManualResetEvent GetReadFinishEvent();
-
-
+        protected abstract ManualResetEvent ReadFinishEvent { get; }
 
         protected abstract CancellationTokenSource SetCancelToken(CancellationTokenSource tokenSource);
 
@@ -146,7 +188,7 @@ namespace Communications.UWP.Core.MsgPumps {
         private void LaunchReadTask(uint readBufferMaxSizer) {
             Task.Run(async () => {
                 this.log.InfoEntry("DoReadTask +++");
-                this.GetReadFinishEvent().Reset();
+                this.ReadFinishEvent.Reset();
                 while (continueReading) {
                     try {
                         int count = (int)await this.reader.LoadAsync(readBufferMaxSizer).AsTask(this.GetCancelToken().Token);
@@ -173,7 +215,6 @@ namespace Communications.UWP.Core.MsgPumps {
                 // Must clean up the reader, writer, socket here since they were 
                 // created in the async space
                 await this.CleanUpAsyncObjects();
-                this.GetReadFinishEvent().Set();
             });
         }
 
@@ -209,20 +250,21 @@ namespace Communications.UWP.Core.MsgPumps {
                             this.socket.Dispose();
                             this.socket = null;
                         }
-
+                        this.ReadFinishEvent.Set();
                         this.Connected = false;
                     }
                 }
                 catch (Exception e) {
-
+                    this.log.Exception(7777, "", e);
                 }
             });
             return t;
         }
 
 
-        private void TearDown() {
+        private void TearDown(bool sleepAfterSocketDispose) {
             try {
+                this.log.InfoEntry("TearDown");
                 #region Cancel Read Thread
                 if (this.Connected) {
                     continueReading = false;
@@ -231,9 +273,14 @@ namespace Communications.UWP.Core.MsgPumps {
                         tk.Cancel();
                         tk.Dispose();
                         this.SetCancelToken(null);
-                        if (!this.GetReadFinishEvent().WaitOne(2000)) {
+                        if (!this.ReadFinishEvent.WaitOne(2000)) {
                             this.log.Error(9999, "Timed out waiting for read cancelation");
                         }
+                    }
+
+                    // Seems socket does not shut itself down fast enough before next call to connect
+                    if (sleepAfterSocketDispose) {
+                        Thread.Sleep(500);
                     }
                 }
                 #endregion
@@ -241,6 +288,7 @@ namespace Communications.UWP.Core.MsgPumps {
             catch (Exception e) {
                 this.log.Exception(9999, "", e);
             }
+            this.log.InfoExit("TearDown");
         }
 
 
