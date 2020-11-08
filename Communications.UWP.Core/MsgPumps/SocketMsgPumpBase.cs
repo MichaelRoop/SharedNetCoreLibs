@@ -20,6 +20,10 @@ namespace Communications.UWP.Core.MsgPumps {
         private static uint readBufferMaxSizer = 256;
         private static bool isConnected = false;
 
+        private StreamSocket socket = null;
+        private DataReader reader = null;
+        private DataWriter writer = null;
+
         #endregion
 
         #region Properties
@@ -46,33 +50,33 @@ namespace Communications.UWP.Core.MsgPumps {
 
 
         public void ConnectAsync(SocketMsgPumpConnectData paramsObj) {
-            this.TearDown(true);
             Task.Run(async () => {
                 try {
+                    this.TearDown();
                     this.log.InfoEntry("ConnectAsync");
                     this.log.Info("ConnectAsync", () => string.Format(
                         "Host:{0} Service:{1}", paramsObj.RemoteHostName, paramsObj.ServiceName));
 
                     readBufferMaxSizer = paramsObj.MaxReadBufferSize;
-                    StreamSocket socket = this.SetSocket(new StreamSocket());
+                    this.socket = new StreamSocket();
                     await socket.ConnectAsync(
                         new HostName(paramsObj.RemoteHostName),
                         paramsObj.ServiceName,
                         paramsObj.ProtectionLevel);
 
-                    StreamSocketInformation i = socket.Information;
+                    StreamSocketInformation i = this.socket.Information;
                     this.log.Info("ConnectAsync", () => string.Format(
                         "Connected to socket Local {0}:{1} Remote {2}:{3} - {4} : Protection:{5}",
                         i.LocalAddress, i.LocalPort,
                         i.RemoteHostName, i.RemotePort, i.RemoteServiceName, i.ProtectionLevel));
 
-                    DataWriter writer = this.SetWriter(new DataWriter(socket.OutputStream));
-                    writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+                    this.writer = new DataWriter(this.socket.OutputStream);
+                    this.writer.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
 
-                    DataReader reader = this.SetReader(new DataReader(socket.InputStream));
-                    reader.InputStreamOptions = InputStreamOptions.Partial;
-                    reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
-                    reader.ByteOrder = ByteOrder.LittleEndian;
+                    this.reader = new DataReader(socket.InputStream);
+                    this.reader.InputStreamOptions = InputStreamOptions.Partial;
+                    this.reader.UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.Utf8;
+                    this.reader.ByteOrder = ByteOrder.LittleEndian;
 
                     CancellationTokenSource readCancelationToken = this.SetCancelToken(new CancellationTokenSource());
                     readCancelationToken.Token.ThrowIfCancellationRequested();
@@ -92,20 +96,20 @@ namespace Communications.UWP.Core.MsgPumps {
         }
 
         public void Disconnect() {
-            this.TearDown(false);
+            this.TearDown();
         }
 
         public void WriteAsync(byte[] msg) {
             if (this.Connected) {
-                if (this.GetSocket() != null) {
+                if (this.socket != null) {
                     Task.Run(async () => {
                         try {
                             this.log.Info("WriteAsync", () =>
                                 string.Format("Sent:{0}", msg.ToFormatedByteString()));
 
-                            this.GetWriter().WriteBytes(msg);
-                            await this.GetSocket().OutputStream.WriteAsync(this.GetWriter().DetachBuffer());
-                            await this.GetSocket().OutputStream.FlushAsync();
+                            this.writer.WriteBytes(msg);
+                            await this.socket.OutputStream.WriteAsync(this.writer.DetachBuffer());
+                            await this.socket.OutputStream.FlushAsync();
                         }
                         catch (Exception e) {
                             this.log.Exception(9999, "", e);
@@ -124,15 +128,17 @@ namespace Communications.UWP.Core.MsgPumps {
 
         #region Abstract methods
 
-        protected abstract StreamSocket GetSocket();
-        protected abstract DataWriter GetWriter();
-        protected abstract DataReader GetReader();
+        /// <summary>Derived returns static cancelation token to persiste in async methods</summary>
+        /// <returns>The cancelation token</returns>
         protected abstract CancellationTokenSource GetCancelToken();
+
+
+        /// <summary>Derived returns static AutoResetEvent to persiste in async methods</summary>
+        /// <returns>The reset event</returns>
         protected abstract ManualResetEvent GetReadFinishEvent();
 
-        protected abstract StreamSocket SetSocket(StreamSocket socket);
-        protected abstract DataWriter SetWriter(DataWriter writer);
-        protected abstract DataReader SetReader(DataReader reader);
+
+
         protected abstract CancellationTokenSource SetCancelToken(CancellationTokenSource tokenSource);
 
         #endregion
@@ -143,15 +149,14 @@ namespace Communications.UWP.Core.MsgPumps {
             Task.Run(async () => {
                 this.log.InfoEntry("DoReadTask +++");
                 this.GetReadFinishEvent().Reset();
-                DataReader reader = this.GetReader();
                 while (continueReading) {
                     try {
-                        int count = (int)await reader.LoadAsync(readBufferMaxSizer).AsTask(this.GetCancelToken().Token);
+                        int count = (int)await this.reader.LoadAsync(readBufferMaxSizer).AsTask(this.GetCancelToken().Token);
                         if (count > 0) {
                             this.log.Error(9, "received");
                             if (count > 0) {
                                 byte[] tmpBuff = new byte[count];
-                                reader.ReadBytes(tmpBuff);
+                                this.reader.ReadBytes(tmpBuff);
                                 this.HandlerMsgReceived(this, tmpBuff);
                             }
                         }
@@ -166,72 +171,83 @@ namespace Communications.UWP.Core.MsgPumps {
                     }
                 }
                 this.log.InfoExit("DoReadTask ---");
+
+                // Must clean up the reader, writer, socket here since they were 
+                // created in the async space
+                await this.CleanUpAsyncObjects();
                 this.GetReadFinishEvent().Set();
             });
         }
 
 
-        // TODO - probably make async task so it can be awaited
-        private void TearDown(bool sleepAfterSocketDispose) {
+        private Task CleanUpAsyncObjects() {
+            Task t = Task.Run(() => {
+                #region Close Writer and Reader
+                try {
+                    if (this.Connected) {
+                        if (this.writer != null) {
+                            try {
+                                this.writer.DetachStream();
+                            }
+                            catch (Exception e) {
+                                this.log.Exception(9999, "", e);
+                            }
+                            this.writer.Dispose();
+                            this.writer = null;
+                        }
+
+                        if (this.reader != null) {
+                            try {
+                                this.reader.DetachStream();
+                            }
+                            catch (Exception e) {
+                                this.log.Exception(9999, "", e);
+                            }
+                            this.reader.Dispose();
+                            this.reader = null;
+                        }
+                        #endregion
+
+                        #region Close socket
+                        if (this.socket != null) {
+                            // The socket was closed so cannot cancel IO
+                            this.socket.Dispose();
+                            this.socket = null;
+                        }
+
+                        this.Connected = false;
+                    }
+                }
+                catch (Exception e) {
+
+                }
+            });
+            return t;
+        }
+
+
+        private void TearDown() {
             try {
                 #region Cancel Read Thread
-                continueReading = false;
-                CancellationTokenSource tk = this.GetCancelToken();
-                if (tk != null) {
-                    tk.Cancel();
-                    tk.Dispose();
-                    this.SetCancelToken(null);
-                    if (!this.GetReadFinishEvent().WaitOne(2000)) {
-                        this.log.Error(9999, "Timed out waiting for read cancelation");
+                if (this.Connected) {
+                    continueReading = false;
+                    CancellationTokenSource tk = this.GetCancelToken();
+                    if (tk != null) {
+                        tk.Cancel();
+                        tk.Dispose();
+                        this.SetCancelToken(null);
+                        if (!this.GetReadFinishEvent().WaitOne(2000)) {
+                            this.log.Error(9999, "Timed out waiting for read cancelation");
+                        }
                     }
                 }
                 #endregion
-
-                #region Close Writer and Reader
-                DataWriter w = this.GetWriter();
-                if (w != null) {
-                    try { 
-                        w.DetachStream();
-                    }
-                    catch (Exception e) { 
-                        this.log.Exception(9999, "", e); 
-                    }
-                    w.Dispose();
-                    this.SetWriter(null);
-                }
-
-                DataReader r = this.GetReader();
-                if (r != null) {
-                    try { 
-                        r.DetachStream(); 
-                    }
-                    catch (Exception e) { 
-                        this.log.Exception(9999, "", e); 
-                    }
-                    r.Dispose();
-                    this.SetReader(null);
-                }
-                #endregion
-
-                #region Close socket
-                StreamSocket s = this.GetSocket();
-                if (s != null) {
-                    // The socket was closed so cannot cancel IO
-                    s.Dispose();
-                    this.SetSocket(null);
-                    // Seems socket does not shut itself down fast enough before next call to connect
-                    if (sleepAfterSocketDispose) {
-                        Thread.Sleep(500);
-                    }
-                }
-                #endregion
-                this.Connected = false;
             }
             catch (Exception e) {
                 this.log.Exception(9999, "", e);
             }
-
         }
+
 
         private void HandlerMsgReceived(object sender, byte[] msg) {
             this.log.Info("HandlerMsgReceived", () => string.Format("Received:{0}", msg.ToFormatedByteString()));

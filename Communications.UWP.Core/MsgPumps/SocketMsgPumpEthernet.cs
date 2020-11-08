@@ -12,9 +12,6 @@ namespace Communications.UWP.Core.MsgPumps {
 
         #region static members
 
-        private static StreamSocket SOCKET = null;
-        private static DataWriter WRITER = null;
-        private static DataReader READER = null;
         private static CancellationTokenSource CANCEL_TOKEN = null;
         private static ManualResetEvent FINISH_READ_EVENT = new ManualResetEvent(false);
 
@@ -26,41 +23,15 @@ namespace Communications.UWP.Core.MsgPumps {
             return CANCEL_TOKEN;
         }
 
-        protected override DataReader GetReader() {
-            return READER;
-        }
 
         protected override ManualResetEvent GetReadFinishEvent() {
             return FINISH_READ_EVENT;
         }
 
-        protected override StreamSocket GetSocket() {
-            return SOCKET;
-        }
-
-        protected override DataWriter GetWriter() {
-            return WRITER;
-        }
 
         protected override CancellationTokenSource SetCancelToken(CancellationTokenSource tokenSource) {
             CANCEL_TOKEN = tokenSource;
             return CANCEL_TOKEN;
-        }
-
-        protected override DataReader SetReader(DataReader reader) {
-            READER = reader;
-            return READER;
-        }
-
-
-        protected override StreamSocket SetSocket(StreamSocket socket) {
-            SOCKET = socket;
-            return SOCKET;
-        }
-
-        protected override DataWriter SetWriter(DataWriter writer) {
-            WRITER = writer;
-            return WRITER;
         }
 
         #endregion
