@@ -3,12 +3,12 @@
 namespace Communications.UWP.Core.MsgPumps {
 
     /// <summary>
-    /// Derived instance of SocketMsgPumpBase for Ethernet that passes its 
+    /// Derived instance of SocketMsgPumpBase for Bluetooth that passes its 
     /// static members to base to enable base to share with async methods.
     /// You can only have one instance in an application because of the 
     /// statics
     /// </summary>
-    public class SocketMsgPumpEthernet : SocketMsgPumpBase {
+    public class SocketMsgPumpBluetooth : SocketMsgPumpBase {
 
         #region static members
 

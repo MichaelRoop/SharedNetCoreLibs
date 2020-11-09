@@ -3,12 +3,12 @@
 namespace Communications.UWP.Core.MsgPumps {
 
     /// <summary>
-    /// Derived instance of SocketMsgPumpBase for Wifi that passes its 
-    /// static members to base to enable base to share variables with 
-    /// its async methods
+    /// Derived instance of SocketMsgPumpBase for WIFI that passes its 
+    /// static members to base to enable base to share with async methods.
+    /// You can only have one instance in an application because of the 
+    /// statics
     /// </summary>
     public class SocketMsgPumpWifi : SocketMsgPumpBase {
-
 
         #region static members
 
