@@ -1,4 +1,5 @@
-﻿using CommunicationStack.Net.DataModels;
+﻿using Communications.UWP.Core.Extensions;
+using CommunicationStack.Net.DataModels;
 using CommunicationStack.Net.Enumerations;
 using CommunicationStack.Net.interfaces;
 using LogUtils.Net;
@@ -50,7 +51,7 @@ namespace Communications.UWP.Core.MsgPumps {
         public async Task ConnectAsync2(SocketMsgPumpConnectData paramsObj) {
             try {
                 this.TearDown(true);
-                this.log.Info("ConnectAsync", () => string.Format(
+                this.log.Info("ConnectAsync2", () => string.Format(
                     "Host:{0} Service:{1}", paramsObj.RemoteHostName, paramsObj.ServiceName));
 
                 this.socket = new StreamSocket();
@@ -60,7 +61,7 @@ namespace Communications.UWP.Core.MsgPumps {
                     paramsObj.ProtectionLevel);
 
                 StreamSocketInformation i = this.socket.Information;
-                this.log.Info("ConnectAsync", () => string.Format(
+                this.log.Info("ConnectAsync2", () => string.Format(
                     "Connected to socket Local {0}:{1} Remote {2}:{3} - {4} : Protection:{5}",
                     i.LocalAddress, i.LocalPort,
                     i.RemoteHostName, i.RemotePort, i.RemoteServiceName, i.ProtectionLevel));
@@ -83,8 +84,9 @@ namespace Communications.UWP.Core.MsgPumps {
                 this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.Connected));
             }
             catch (Exception e) {
-                this.log.Exception(9999, "Connect Asyn Error", e);
-                this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.ConnectionFailure));
+                this.log.Exception(9999, "Connect Asyn2 Error", e);
+                this.MsgPumpConnectResultEvent?.Invoke(this, 
+                    new MsgPumpResults(MsgPumpResultCode.ConnectionFailure, e.GetSocketCode()));
             }
         }
 
