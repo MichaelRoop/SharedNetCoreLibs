@@ -128,6 +128,7 @@ namespace Communications.UWP.Core.MsgPumps {
                 }
                 this.log.InfoExit("DoReadTask ---");
                 this.readFinishedEvent.Set();
+                this.Connected = false;
             });
         }
 

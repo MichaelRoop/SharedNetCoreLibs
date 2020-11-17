@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHelperClasses.Core", "Wp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationStack.Net", "..\SharedNetLibs\CommunicationStack.Net\CommunicationStack.Net.csproj", "{CE2E93BB-57FF-4179-A7C5-035CE49FA2F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Communications.UWP.Core", "Communications.UWP.Core\Communications.UWP.Core.csproj", "{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communications.UWP.Core", "Communications.UWP.Core\Communications.UWP.Core.csproj", "{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
