@@ -51,6 +51,14 @@ namespace WpfHelperClasses.Core {
         }
 
 
+        public static void SetVisualEnabled(this UIElement uIElement, bool isEnabled, double opacity = 0.4) {
+            uIElement.IsEnabled = isEnabled;
+            if (!isEnabled) {
+                uIElement.Opacity = opacity;
+            }
+        }
+
+
         #endregion
 
         #region Selector based such as ListBox, ComboBox
