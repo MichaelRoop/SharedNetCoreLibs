@@ -184,33 +184,38 @@ namespace Communications.UWP.Core.MsgPumps {
         private void LaunchReadTask(uint readBufferMaxSizer) {
             this.log.InfoEntry("DoReadTask +++");
             Task.Run(async () => {
-                this.ReadFinishEvent.Reset();
-                while (continueReading) {
-                    try {
-                        int count = (int)await this.reader.LoadAsync(readBufferMaxSizer).AsTask(this.CancelToken.Token);
-                        if (count > 0) {
-                            this.log.Error(9, "received");
+                try {
+                    this.ReadFinishEvent.Reset();
+                    while (continueReading) {
+                        try {
+                            int count = (int)await this.reader.LoadAsync(readBufferMaxSizer).AsTask(this.CancelToken.Token);
                             if (count > 0) {
-                                byte[] tmpBuff = new byte[count];
-                                this.reader.ReadBytes(tmpBuff);
-                                this.HandlerMsgReceived(this, tmpBuff);
+                                this.log.Error(9, "received");
+                                if (count > 0) {
+                                    byte[] tmpBuff = new byte[count];
+                                    this.reader.ReadBytes(tmpBuff);
+                                    this.HandlerMsgReceived(this, tmpBuff);
+                                }
                             }
                         }
+                        catch (TaskCanceledException) {
+                            this.log.Info("DoReadTask", "Cancelation");
+                            break;
+                        }
+                        catch (Exception e) {
+                            this.log.Exception(9999, "", e);
+                            break;
+                        }
                     }
-                    catch (TaskCanceledException) {
-                        this.log.Info("DoReadTask", "Cancelation");
-                        break;
-                    }
-                    catch (Exception e) {
-                        this.log.Exception(9999, "", e);
-                        break;
-                    }
-                }
-                this.log.InfoExit("DoReadTask ---");
+                    this.log.InfoExit("DoReadTask ---");
 
-                // Must clean up the reader, writer, socket here since they were 
-                // created in the async space
-                await this.CleanUpAsyncObjects();
+                    // Must clean up the reader, writer, socket here since they were 
+                    // created in the async space
+                    await this.CleanUpAsyncObjects();
+                }
+                catch (Exception e) {
+                    this.log.Exception(9999, "LaunchReadTask", "", e);
+                }
             });
         }
 

@@ -1,4 +1,5 @@
-﻿using CommunicationStack.Net.DataModels;
+﻿using ChkUtils.Net;
+using CommunicationStack.Net.DataModels;
 using CommunicationStack.Net.Enumerations;
 using CommunicationStack.Net.interfaces;
 using LogUtils.Net;
@@ -102,33 +103,46 @@ namespace Communications.UWP.Core.MsgPumps {
 
         private void LaunchReadTask() {
             Task.Run(async () => {
-                this.log.InfoEntry("DoReadTask +++");
-                this.readFinishedEvent.Reset();
+                try {
+                    this.log.InfoEntry("DoReadTask +++");
+                    this.readFinishedEvent.Reset();
 
-                while (this.continueReading) {
-                    try {
-                        int count = (int)await this.reader.LoadAsync(
-                            this.readBufferMaxSizer).AsTask(this.readCancelationToken.Token);
-                        //this.log.Info("Launch Read Task", () => string.Format("Received:{0} bytes", count));
-                        if (count > 0) {
-                            byte[] tmpBuff = new byte[count];
-                            this.reader.ReadBytes(tmpBuff);
-                            this.HandlerMsgReceived(this, tmpBuff);
+                    while (this.continueReading) {
+                        try {
+                            int count = (int)await this.reader.LoadAsync(
+                                this.readBufferMaxSizer).AsTask(this.readCancelationToken.Token);
+                            //this.log.Info("Launch Read Task", () => string.Format("Received:{0} bytes", count));
+                            if (count > 0) {
+                                byte[] tmpBuff = new byte[count];
+                                this.reader.ReadBytes(tmpBuff);
+                                this.HandlerMsgReceived(this, tmpBuff);
+                            }
+                        }
+                        catch (TaskCanceledException) {
+                            this.log.Info("DoReadTask", "Cancelation");
+                            break;
+                        }
+                        catch (Exception e) {
+                            this.log.Exception(9999, "", e);
+                            WrapErr.SafeAction(() => { 
+                                this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.ReadFailure)); 
+                            });
+                            break;
                         }
                     }
-                    catch (TaskCanceledException) {
-                        this.log.Info("DoReadTask", "Cancelation");
-                        break;
-                    }
-                    catch (Exception e) {
-                        this.log.Exception(9999, "", e);
-                        this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.ReadFailure));
-                        break;
-                    }
+                    this.log.InfoExit("DoReadTask ---");
+                    this.readFinishedEvent.Set();
+                    this.Connected = false;
                 }
-                this.log.InfoExit("DoReadTask ---");
-                this.readFinishedEvent.Set();
-                this.Connected = false;
+                catch (Exception e) {
+                    this.log.Exception(9999, "LaunchReadTask", "", e);
+                    this.readFinishedEvent.Set();
+                    this.Connected = false;
+                    WrapErr.SafeAction(() => {
+                        this.MsgPumpConnectResultEvent?.Invoke(this, new MsgPumpResults(MsgPumpResultCode.ReadFailure));
+                    });
+
+                }
             });
         }
 
