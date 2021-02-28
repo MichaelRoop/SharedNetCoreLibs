@@ -52,12 +52,29 @@ namespace WpfHelperClasses.Core {
 
 
         public static void SetVisualEnabled(this UIElement uIElement, bool isEnabled, double opacity = 0.4) {
-            uIElement.IsEnabled = isEnabled;
-            if (!isEnabled) {
-                uIElement.Opacity = opacity;
+            if (uIElement != null) {
+                uIElement.IsEnabled = isEnabled;
+                if (!isEnabled) {
+                    uIElement.Opacity = opacity;
+                }
             }
         }
 
+
+        public static void Enable(this UIElement uIElement) {
+            if (uIElement != null) {
+                uIElement.IsEnabled = true;
+                uIElement.Opacity = 1.0;
+            }
+        }
+
+
+        public static void Disable(this UIElement uIElement, double opacity = 0.4) {
+            if (uIElement != null) {
+                uIElement.IsEnabled = false;
+                uIElement.Opacity = opacity;
+            }
+        }
 
         #endregion
 
