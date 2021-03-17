@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -41,12 +42,17 @@ namespace WpfHelperClasses.Core {
 
         public static void ToggleVisibility(this UIElement uiElement) {
             if (uiElement != null) {
-                if (uiElement.Visibility == Visibility.Collapsed) {
+                if (uiElement.Visibility == Visibility.Collapsed ||
+                    uiElement.Visibility == Visibility.Hidden) {
                     uiElement.Show();
                 }
                 else {
                     uiElement.Collapse();
                 }
+            }
+            else {
+                // Provoke exception
+                uiElement.Visibility = Visibility.Visible;
             }
         }
 
@@ -201,6 +207,33 @@ namespace WpfHelperClasses.Core {
         }
 
         #endregion
+
+
+        //// Unfortunately it also turns off snap size max
+        /// and does not get rid of the exta top border
+        //private const int GWL_STYLE = -16, WS_MAXIMIZEBOX = 0x10000, WS_MINIMIZEBOX = 0x20000;
+
+        //[DllImport("user32.dll")]
+        //extern private static int GetWindowLong(IntPtr hwnd, int index);
+
+        //[DllImport("user32.dll")]
+        //extern private static int SetWindowLong(IntPtr hwnd, int index, int value);
+
+
+        ///// <summary>
+        ///// Hides the Minimize and Maximize buttons in a Window. Must be called in the constructor.
+        ///// </summary>
+        ///// <param name="window">The Window whose Minimize/Maximize buttons will be hidden.</param>
+        //public static void HideMinimizeAndMaximizeButtons(this Window window) {
+        //    window.SourceInitialized += (s, e) => {
+        //        IntPtr hwnd = new System.Windows.Interop.WindowInteropHelper(window).Handle;
+        //        int currentStyle = GetWindowLong(hwnd, GWL_STYLE);
+
+        //        SetWindowLong(hwnd, GWL_STYLE, currentStyle & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX);
+        //    };
+        //}
+
+
 
     }
 }
