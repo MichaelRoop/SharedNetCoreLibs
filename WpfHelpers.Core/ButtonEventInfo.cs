@@ -40,9 +40,8 @@ namespace WpfHelperClasses.Core {
         /// <summary>Will set itself sized if it holds the same button</summary>
         /// <param name="button">The Button that is saved</param>
         public void SetSizedIfSame(Button button) {
-            if (button.Name == this.name) {
-                this.IsSized = true;
-            }
+            // Will cause resize multiple times, once for each button in set but no way to compare otherwise
+            this.IsSized = true;
         }
 
 
