@@ -4,6 +4,69 @@ namespace WpfHelperClasses.Core {
 
     public static class WpfKeyExtensions {
 
+        #region GetValue functions
+
+        public static string GetNumericValue(this Key key) {
+            switch (key) {
+                case Key.NumPad0:
+                case Key.D0:
+                    return "0";
+                case Key.NumPad1:
+                case Key.D1:
+                    return "1";
+                case Key.NumPad2:
+                case Key.D2:
+                    return "2";
+                case Key.NumPad3:
+                case Key.D3:
+                    return "3";
+                case Key.NumPad4:
+                case Key.D4:
+                    return "4";
+                case Key.NumPad5:
+                case Key.D5:
+                    return "5";
+                case Key.NumPad6:
+                case Key.D6:
+                    return "6";
+                case Key.NumPad7:
+                case Key.D7:
+                    return "7";
+                case Key.NumPad8:
+                case Key.D8:
+                    return "8";
+                case Key.NumPad9:
+                case Key.D9:
+                    return "9";
+                default:
+                    return string.Empty;
+            }
+        }
+
+
+        public static string GetHexDecimalValue(this Key key) {
+            switch (key) {
+                case Key.A:
+                    return "A";
+                case Key.B:
+                    return "B";
+                case Key.C:
+                    return "C";
+                case Key.D:
+                    return "D";
+                case Key.E:
+                    return "E";
+                case Key.F:
+                    return "F";
+                default:
+                    return key.GetNumericValue();
+            }
+        }
+
+
+        #endregion
+
+        #region Is functions
 
         /// <summary>Any numeric value from 0-9, keyboard or keypad</summary>
         /// <param name="key">The key press to evaluate</param>
@@ -125,7 +188,7 @@ namespace WpfHelperClasses.Core {
         /// <summary>Is key 0-9, A-F</summary>
         /// <param name="key">The key press to evaluate</param>
         /// <returns>true if 0-9 or A-F, otherwise false</returns>
-        public static bool IsHexDecimal(Key key) {
+        public static bool IsHexDecimal(this Key key) {
             if (key.IsHexLetter()) {
                 return true;
             }
@@ -451,7 +514,7 @@ namespace WpfHelperClasses.Core {
             return false;
         }
 
-
+        #endregion
 
 
     }
