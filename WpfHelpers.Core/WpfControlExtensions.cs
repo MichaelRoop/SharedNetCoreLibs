@@ -82,6 +82,20 @@ namespace WpfHelperClasses.Core {
             }
         }
 
+
+
+        public static void Invalidate(this UIElement uIElement) {
+            if (uIElement != null) {
+                uIElement.InvalidateArrange();
+                uIElement.InvalidateMeasure();
+                uIElement.InvalidateVisual();
+                uIElement.UpdateLayout();
+            }
+        }
+
+
+
+
         #endregion
 
         #region Selector based such as ListBox, ComboBox
