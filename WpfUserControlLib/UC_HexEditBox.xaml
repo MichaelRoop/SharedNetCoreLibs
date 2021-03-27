@@ -1,0 +1,17 @@
+﻿<local:UC_UintEditBoxBase x:Class="WpfUserControlLib.UC_HexEditBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WpfUserControlLib"
+             MinWidth="170" FontSize="16"
+             mc:Ignorable="d" 
+             >
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox x:Name="tbEdit" Foreground="#004c8c"  Margin="2" HorizontalAlignment="Stretch"
+            VerticalAlignment="Center" PreviewKeyDown="tbEdit_PreviewKeyDown" TextChanged="tbEdit_TextChanged" />
+    </Grid>
+</local:UC_UintEditBoxBase>
