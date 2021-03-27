@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationStack.Net", ".
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communications.UWP.Core", "Communications.UWP.Core\Communications.UWP.Core.csproj", "{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfCustomControlLib.Core", "WpfCustomControlLib.Core\WpfCustomControlLib.Core.csproj", "{41D4F714-B048-4D6C-A5A5-F950A1C64075}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41D4F714-B048-4D6C-A5A5-F950A1C64075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41D4F714-B048-4D6C-A5A5-F950A1C64075}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41D4F714-B048-4D6C-A5A5-F950A1C64075}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41D4F714-B048-4D6C-A5A5-F950A1C64075}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
