@@ -5,4 +5,13 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Reference Include="ChkUtils.Net">
+      <HintPath>..\..\SharedNetLibs\ChkUtils.Net\bin\Debug\netstandard2.1\ChkUtils.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="LogUtils.Net">
+      <HintPath>..\..\SharedNetLibs\LogUtils.Net\bin\Debug\netstandard2.1\LogUtils.Net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
