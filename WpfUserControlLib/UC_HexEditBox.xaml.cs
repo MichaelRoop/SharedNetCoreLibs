@@ -38,29 +38,23 @@ namespace WpfUserControlLib {
 
 
         private void tbEdit_PreviewKeyDown(object sender, KeyEventArgs args) {
-            try {
-                if (args.Key.IsHexNumericForbidden()) {
-                    args.Handled = true;
-                }
-                else {
-                    if (args.Key.IsHexDecimal()) {
-                        string add = args.Key.GetHexDecimalValue();
-                        string newVal = this.tbEdit.PreviewKeyDownAssembleText(add);
-                        this.log.Info("", () => string.Format("'{0}'  '{1}'  '{2}'", this.tbEdit, add, newVal));
-                        if (newVal.Length > 0) {
-                            this.ValidateRange(() => Convert.ToUInt64(newVal, 16).ToString(), args);
-                        }
+            this.ProcessPreviewKey(args,
+                () => args.Key.IsHexNumericForbidden(),
+                () => args.Key.IsHexDecimal(),
+                () => {
+                    string add = args.Key.GetHexDecimalValue();
+                    string newVal = this.tbEdit.PreviewKeyDownAssembleText(add);
+                    this.log.Info("", () => string.Format("'{0}'  '{1}'  '{2}'", this.tbEdit, add, newVal));
+                    if (newVal.Length > 0) {
+                        this.ValidateRange(() => Convert.ToUInt64(newVal, 16).ToString(), args);
                     }
-                }
-            }
-            catch (Exception ex) {
-                this.log.Exception(9999, "", ex);
-            }
+                });
         }
+
 
         private void tbEdit_TextChanged(object sender, TextChangedEventArgs e) {
             this.log.Info("tbEdit_TextChanged", () => this.tbEdit.Text);
-            this.SetValues(this.tbEdit.Text, () => Convert.ToUInt64(this.tbEdit.Text, 16));
+            this.ProcessTextChanged(this.tbEdit.Text, () => Convert.ToUInt64(this.tbEdit.Text, 16));
         }
     }
 }

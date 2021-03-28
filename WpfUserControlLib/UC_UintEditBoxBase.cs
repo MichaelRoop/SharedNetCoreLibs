@@ -115,7 +115,25 @@ namespace WpfUserControlLib {
         }
 
 
-        protected void SetValues(string text, Func<UInt64> valueFunc) {
+
+        protected void ProcessPreviewKey(KeyEventArgs args, Func<bool> isForbidden, Func<bool> isValidValue, Action onOkToProcess) {
+            try {
+                if (isForbidden()) {
+                    args.Handled = true;
+                }
+                else {
+                    if (isValidValue()) {
+                        onOkToProcess();
+                    }
+                }
+            }
+            catch (Exception ex) {
+                this.log.Exception(9999, "", ex);
+            }
+        }
+
+
+        protected void ProcessTextChanged(string text, Func<UInt64> valueFunc) {
             try {
                 this.log.Info("SetValues", text);
                 if (text.Length == 0) {
@@ -131,9 +149,6 @@ namespace WpfUserControlLib {
                 this.log.Exception(9999, "", ex);
             }
         }
-
-
-
 
         #endregion
 

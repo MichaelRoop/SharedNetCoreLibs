@@ -39,32 +39,24 @@ namespace WpfUserControlLib {
 
 
         private void tbEdit_PreviewKeyDown(object sender, KeyEventArgs args) {
-            try {
-                if (args.Key.IsBinaryNumericForbidden()) {
-                    args.Handled = true;
-                }
-                else {
-                    if (args.Key.IsNumeric()) {
-                        string add = args.Key.GetNumericValue();
-                        string newVal = tbEdit.PreviewKeyDownAssembleText(add);
-                        newVal = newVal.Replace(" ", "");
-                        this.log.Info("", () => string.Format("'{0}'  '{1}'  '{2}'", this.tbEdit, add, newVal));
-
-                        if (newVal.Length > 0) {
-                            this.ValidateRange(() => Convert.ToUInt64(newVal, 2).ToString(), args);
-                        }
+            this.ProcessPreviewKey(args,
+                () => args.Key.IsBinaryNumericForbidden(),
+                () => args.Key.IsNumeric(),
+                () => {
+                    string add = args.Key.GetNumericValue();
+                    string newVal = tbEdit.PreviewKeyDownAssembleText(add);
+                    newVal = newVal.Replace(" ", "");
+                    this.log.Info("", () => string.Format("'{0}'  '{1}'  '{2}'", this.tbEdit, add, newVal));
+                    if (newVal.Length > 0) {
+                        this.ValidateRange(() => Convert.ToUInt64(newVal, 2).ToString(), args);
                     }
-                }
-            }
-            catch (Exception ex) {
-                this.log.Exception(9999, "", ex);
-            }
+                });
         }
 
 
         private void tbEdit_TextChanged(object sender, TextChangedEventArgs e) {
             this.log.Info("tbEdit_TextChanged", this.tbEdit.Text);
-            this.SetValues(this.tbEdit.Text, () => Convert.ToUInt64(this.tbEdit.Text.Replace(" ", ""), 2));
+            this.ProcessTextChanged(this.tbEdit.Text, () => Convert.ToUInt64(this.tbEdit.Text.Replace(" ", ""), 2));
         }
     }
 }
