@@ -6,12 +6,42 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\icons8-checkmark-50.png" />
+    <None Remove="Images\icons8-close-window-50-noborder.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="ChkUtils.Net">
       <HintPath>..\..\SharedNetLibs\ChkUtils.Net\bin\Debug\netstandard2.1\ChkUtils.Net.dll</HintPath>
     </Reference>
     <Reference Include="LogUtils.Net">
       <HintPath>..\..\SharedNetLibs\LogUtils.Net\bin\Debug\netstandard2.1\LogUtils.Net.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\SharedNetLibs\LanguageFactory\LanguageFactory.Net.csproj" />
+    <ProjectReference Include="..\WpfHelpers.Core\WpfHelperClasses.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\icons8-checkmark-50.png" />
+    <Resource Include="Images\icons8-close-window-50-noborder.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

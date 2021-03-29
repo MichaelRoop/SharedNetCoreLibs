@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationStack.Net", ".
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Communications.UWP.Core", "Communications.UWP.Core\Communications.UWP.Core.csproj", "{B5B60F3B-FB7B-43F1-89F3-7DEA35C1A7BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfCustomControlLib.Core", "WpfCustomControlLib.Core\WpfCustomControlLib.Core.csproj", "{41D4F714-B048-4D6C-A5A5-F950A1C64075}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfCustomControlLib.Core", "WpfCustomControlLib.Core\WpfCustomControlLib.Core.csproj", "{41D4F714-B048-4D6C-A5A5-F950A1C64075}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfUserControlLib", "WpfUserControlLib\WpfUserControlLib.csproj", "{BAD6F7D3-EB3A-4F60-A6BF-4759CE54D24D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfUserControlLib", "WpfUserControlLib\WpfUserControlLib.csproj", "{BAD6F7D3-EB3A-4F60-A6BF-4759CE54D24D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LanguageFactory.Net", "..\SharedNetLibs\LanguageFactory\LanguageFactory.Net.csproj", "{8F807E0F-8D29-4480-929A-40A633FF0170}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{BAD6F7D3-EB3A-4F60-A6BF-4759CE54D24D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAD6F7D3-EB3A-4F60-A6BF-4759CE54D24D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAD6F7D3-EB3A-4F60-A6BF-4759CE54D24D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F807E0F-8D29-4480-929A-40A633FF0170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F807E0F-8D29-4480-929A-40A633FF0170}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F807E0F-8D29-4480-929A-40A633FF0170}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F807E0F-8D29-4480-929A-40A633FF0170}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

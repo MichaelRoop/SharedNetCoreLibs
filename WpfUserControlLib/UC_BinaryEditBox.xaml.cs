@@ -22,7 +22,11 @@ namespace WpfUserControlLib {
         protected override void DoSetValue(UInt64 value) {
             this.tbEdit.TextChanged -= this.tbEdit_TextChanged;
             int carretIndex = this.tbEdit.CaretIndex;
-            this.tbEdit.Text = value.ToFormatedBinaryString();
+            //int existingSpaces = carretIndex / 4;
+            this.tbEdit.Text = value.ToFormatedBinaryString().Trim();
+            // A space added for every 4 binary digits. Adjust carret
+            //int currentSpaces = this.tbEdit.Text.Length / 4;
+            //carretIndex += (currentSpaces - existingSpaces);
             this.tbEdit.CaretIndex = carretIndex > this.tbEdit.Text.Length
                 ? this.tbEdit.Text.Length
                 : carretIndex;
