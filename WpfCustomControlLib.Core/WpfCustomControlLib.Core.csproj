@@ -6,9 +6,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\icons8-add-50-noborder.png" />
     <None Remove="Images\icons8-checkmark-50.png" />
     <None Remove="Images\icons8-close-window-50-noborder.png" />
     <None Remove="Images\icons8-language-white-50.png" />
+    <None Remove="Images\icons8-send-email-100.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.19041.1" />
+    <PackageReference Include="System.Runtime.WindowsRuntime" Version="4.7.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,9 +33,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\icons8-add-50-noborder.png" />
     <Resource Include="Images\icons8-checkmark-50.png" />
     <Resource Include="Images\icons8-close-window-50-noborder.png" />
     <Resource Include="Images\icons8-language-white-50.png" />
+    <Resource Include="Images\icons8-send-email-100.png" />
   </ItemGroup>
 
   <ItemGroup>
