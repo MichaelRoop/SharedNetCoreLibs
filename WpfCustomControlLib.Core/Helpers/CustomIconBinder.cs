@@ -6,6 +6,7 @@
         public static string YES { get { return CustomIconBinder.GetIconSource("icons8-checkmark-50.png"); } }
         public static string NO { get { return CustomIconBinder.CANCEL; } }
         public static string CANCEL { get { return CustomIconBinder.GetIconSource("icons8-close-window-50-noborder.png"); } }
+        public static string LANGUAGE_W { get { return CustomIconBinder.GetIconSource("icons8-language-white-50.png"); } }
 
 
         private static string GetIconSource(string name) {

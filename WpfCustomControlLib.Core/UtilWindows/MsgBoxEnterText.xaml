@@ -13,9 +13,9 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="WpfCustomControlLib.Core;component/Themes/MyWindows.xaml"/>
-                <ResourceDictionary Source="WpfCustomControlLib.Core;component/Themes/MyButtons.xaml"/>
-                <ResourceDictionary Source="WpfCustomControlLib.Core;component/Themes/MyLabelAndText.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WpfCustomControlLib.Core;component/Themes/MyWindows.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WpfCustomControlLib.Core;component/Themes/MyButtons.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/WpfCustomControlLib.Core;component/Themes/MyLabelAndText.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

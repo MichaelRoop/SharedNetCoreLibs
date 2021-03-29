@@ -41,6 +41,8 @@ namespace WpfCustomControlLib.Core.Helpers {
         public static string No { get { return GetTxt(MsgCode.no); } }
         public static string Continue { get { return GetTxt(MsgCode.Continue); } }
         public static string Delete { get { return GetTxt(MsgCode.Delete); } }
+        public static string Save { get { return GetTxt(MsgCode.save); } }
+        public static string Language { get { return GetTxt(MsgCode.language); } }
 
         #endregion
 
