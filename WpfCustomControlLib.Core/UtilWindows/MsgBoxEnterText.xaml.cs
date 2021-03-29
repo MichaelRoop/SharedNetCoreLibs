@@ -53,7 +53,6 @@ namespace WpfCustomControlLib.Core.UtilWindows {
             this.Title = title;
             this.txtBlock.Text = msg;
             this.txtInput.Text = defaultTxt;
-            this.SizeToContent = SizeToContent.WidthAndHeight;
             this.widthManager = new ButtonGroupSizeSyncManager(this.btnOk, this.btnCancel);
             this.widthManager.PrepForChange();
         }
@@ -69,7 +68,8 @@ namespace WpfCustomControlLib.Core.UtilWindows {
         }
 
 
-        private void Window_ContentRendered(object sender, EventArgs e) {
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            this.SizeToContent = SizeToContent.WidthAndHeight;
             if (parent != null) {
                 this.CenterToParent(this.parent);
             }

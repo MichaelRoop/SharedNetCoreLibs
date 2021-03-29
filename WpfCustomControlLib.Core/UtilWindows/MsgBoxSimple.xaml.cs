@@ -67,12 +67,11 @@ namespace WpfCustomControlLib.Core.UtilWindows {
 
         private MsgBoxSimple(Window parent) {
             InitializeComponent();
-            this.SizeToContent = SizeToContent.WidthAndHeight;
+            this.parent = parent;
         }
 
 
         public MsgBoxSimple(Window parent, string msg) : this(parent) {
-            this.parent = parent;
             this.txtBlock.Text = msg;
         }
 
@@ -89,8 +88,8 @@ namespace WpfCustomControlLib.Core.UtilWindows {
             base.OnApplyTemplate();
         }
 
-
-        private void Window_ContentRendered(object sender, EventArgs e) {
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            this.SizeToContent = SizeToContent.WidthAndHeight;
             if (parent != null) {
                 this.CenterToParent(this.parent);
             }
@@ -100,5 +99,6 @@ namespace WpfCustomControlLib.Core.UtilWindows {
         private void btnOk_Click(object sender, RoutedEventArgs e) {
             this.Close();
         }
+
     }
 }

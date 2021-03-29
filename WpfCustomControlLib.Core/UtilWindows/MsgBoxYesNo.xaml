@@ -8,7 +8,7 @@
         xmlns:controls="clr-namespace:WpfCustomControlLib.Core.Buttons"
         mc:Ignorable="d"
         Style="{DynamicResource MyWindowStyle}" Title="" 
-        WindowStartupLocation="CenterScreen" ContentRendered="Window_ContentRendered" Closing="Window_Closing"
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded" Closing="Window_Closing"
         MinHeight="100" MinWidth="200" MaxHeight="500" MaxWidth="400" BorderThickness=".25">
     <Window.Resources>
         <ResourceDictionary>
@@ -26,11 +26,11 @@
             <DockPanel HorizontalAlignment="Center" Margin="10">
                 <controls:UC_IconButton x:Name="btnYes" Style="{DynamicResource TextIconButton}" Margin="5" 
                     Content="{Binding Source={x:Static helpers:CustomTxtBinder.Yes}}"
-                    IconSource="{Binding Source={x:Static helpers:CustomIconBinder.YES}}" 
+                    IconSource="{Binding Source={x:Static helpers:CustomIconBinder.Yes}}" 
                     Click="btnYes_Click" />
                 <controls:UC_IconButton x:Name="btnNo" Style="{DynamicResource TextIconButton}" Margin="5" 
                     Content="{Binding Source={x:Static helpers:CustomTxtBinder.No}}"
-                    IconSource="{Binding Source={x:Static helpers:CustomIconBinder.CANCEL}}" 
+                    IconSource="{Binding Source={x:Static helpers:CustomIconBinder.Cancel}}" 
                     Click="btnNo_Click" />
             </DockPanel>
         </StackPanel>

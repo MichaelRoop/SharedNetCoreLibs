@@ -8,7 +8,7 @@
         xmlns:controls="clr-namespace:WpfCustomControlLib.Core.Buttons"
         mc:Ignorable="d"
         Style="{DynamicResource MyWindowStyle}" Title="" 
-        WindowStartupLocation="CenterScreen" ContentRendered="Window_ContentRendered"
+        WindowStartupLocation="CenterScreen" Loaded="Window_Loaded"
         MinHeight="100" MinWidth="200" MaxHeight="800" MaxWidth="800" BorderThickness=".25">
     <Window.Resources>
         <ResourceDictionary>

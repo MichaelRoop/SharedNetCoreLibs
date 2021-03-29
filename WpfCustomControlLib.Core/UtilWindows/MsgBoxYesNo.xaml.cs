@@ -119,8 +119,9 @@ namespace WpfCustomControlLib.Core.UtilWindows {
         }
 
 
-        private void Window_ContentRendered(object sender, EventArgs e) {
-            if (this.parent != null) {
+        private void Window_Loaded(object sender, RoutedEventArgs e) {
+            this.SizeToContent = SizeToContent.WidthAndHeight;
+            if (parent != null) {
                 this.CenterToParent(this.parent);
             }
         }
@@ -133,7 +134,6 @@ namespace WpfCustomControlLib.Core.UtilWindows {
 
         private void InitFromConstructors(bool suppressContinue) {
             this.txtContinue.Visibility = suppressContinue ? Visibility.Collapsed : Visibility.Visible;
-            this.SizeToContent = SizeToContent.WidthAndHeight;
             // Call before rendering which will trigger initial resize events
             this.widthManager = new ButtonGroupSizeSyncManager(this.btnYes, this.btnNo);
             this.widthManager.PrepForChange();

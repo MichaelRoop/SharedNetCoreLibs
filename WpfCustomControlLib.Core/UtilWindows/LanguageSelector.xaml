@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Style="{DynamicResource MyWindowStyle}"
         Title="{Binding Source={x:Static helpers:CustomTxtBinder.Language}}" 
-        Icon="{Binding Source={x:Static helpers:CustomIconBinder.LANGUAGE_W}}"
+        Icon="{Binding Source={x:Static helpers:CustomIconBinder.LanguageW}}"
         MinHeight="150" MinWidth="100" BorderThickness=".25"
         Loaded="Window_Loaded" Closing="Window_Closing">
     <Window.Resources>
@@ -46,7 +46,7 @@
                     <controls:UC_IconButton x:Name="btnCancel"  Margin="0,0,10,0"
                             Style="{DynamicResource TextIconButton}" 
                             Content="{Binding Source={x:Static helpers:CustomTxtBinder.Cancel}}" 
-                            IconSource="{Binding Source={x:Static helpers:CustomIconBinder.CANCEL}}"
+                            IconSource="{Binding Source={x:Static helpers:CustomIconBinder.Cancel}}"
                             Click="btnCancel_Click"/>
                     <controls:UC_IconButton x:Name="btnSave" Style="{DynamicResource TextIconButton}" 
                             Content="{Binding Source={x:Static helpers:CustomTxtBinder.Save}}"
