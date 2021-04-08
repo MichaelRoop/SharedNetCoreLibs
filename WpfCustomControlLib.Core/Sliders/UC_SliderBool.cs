@@ -12,7 +12,6 @@ namespace WpfCustomControlLib.Core.Sliders {
         // TODO Dependency properties to set on and off color in XAML
 
         public UC_SliderBool() {
-            // TODO - check if can be made inaccessible
             this.IsSnapToTickEnabled = true;
             this.Minimum = 0;
             this.Maximum = 1;
