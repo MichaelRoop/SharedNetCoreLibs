@@ -1,0 +1,38 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sliders="clr-namespace:WpfCustomControlLib.Core.Sliders"                    
+                    
+                    
+                    >
+
+    <Style x:Key="BoolSliderStyle" TargetType="{x:Type sliders:UC_SliderBool}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Slider}">
+                    <Grid VerticalAlignment="Center">
+                        <Border x:Name="borderBackground" Margin="2,0" Height="24" Background="LightGray" />
+                        <Canvas VerticalAlignment="Center">
+                            <!--<Border x:Name="PART_SelectionRange" 
+                                        HorizontalAlignment="Left" VerticalAlignment="Center" Margin="-12,-12,0,0" 
+                                        Height="24" Background="{TemplateBinding Foreground}" />-->
+                        </Canvas>
+                        <Track x:Name="PART_Track">
+                            <Track.Thumb>
+                                <Thumb Width="24" Height="24" Background="{TemplateBinding Foreground}" />
+                            </Track.Thumb>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="IsSelectionRangeEnabled" Value="True" />
+        <Setter Property="SelectionStart" Value="{Binding Minimum, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="SelectionEnd" Value="{Binding Value, RelativeSource={RelativeSource Self}}" />
+        <Setter Property="Foreground" Value="Red" />
+    </Style>
+
+
+
+
+</ResourceDictionary>
