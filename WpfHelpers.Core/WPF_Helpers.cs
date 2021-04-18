@@ -42,7 +42,33 @@ namespace WpfHelperClasses.Core {
             focus.Y = targetPoints.Y + (parent.Height / 2.0);
             child.Top = focus.Y - (child.Height / 2.0);
             child.Left = focus.X - (child.Width / 2.0);
+
+            if (child.Top < 0) {
+                child.Top = 0;
+            }
+            if (child.Left < 0) {
+                child.Left = 0;
+            }
+
         }
+
+
+
+        public static void CenterToParent(this Window child, UserControl parent, Window AppWindow) {
+            child.CenterToParent(parent);
+            double appBottom = AppWindow.Top + AppWindow.Height;
+            double childBottom = child.Top + child.Height;
+            if (childBottom > appBottom) {
+                child.Top -= (childBottom - appBottom);
+            }
+
+            if (child.Left < 0) {
+                child.Left = 0;
+            }
+        }
+
+
+
 
         #endregion
 
