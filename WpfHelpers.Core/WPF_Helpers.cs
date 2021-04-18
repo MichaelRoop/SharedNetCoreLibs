@@ -17,6 +17,19 @@ namespace WpfHelperClasses.Core {
         public static void CenterChild(Window parent, Window child) {
             child.Left = parent.Left + ((parent.Width - child.ActualWidth) / 2.0);
             child.Top = parent.Top + ((parent.Height - child.ActualHeight) / 2.0);
+
+            double screenBottom = System.Windows.SystemParameters.WorkArea.Height;
+            double childBottom = child.Top + child.Height;
+
+            // center if out of bounds of screen
+            if (child.Top < 0 || (childBottom > screenBottom)) {
+                child.Top = (screenBottom / 2.0) - (child.Height / 2.0);
+            }
+
+            // TODO left right
+            if (child.Left < 0) {
+                child.Left = 0;
+            }
         }
 
 
@@ -30,16 +43,16 @@ namespace WpfHelperClasses.Core {
 
         /// <summary>Center the calling window over the user contol that opened it</summary>
         /// <param name="child">The window opening</param>
-        /// <param name="parent">The user control doing the opening</param>
-        public static void CenterToParent(this Window child, UserControl parent) {
+        /// <param name="userControl">The user control doing the opening</param>
+        public static void CenterToParent(this Window child, UserControl userControl) {
             //https://stackoverflow.com/questions/44119226/wpf-set-dialog-window-position-relative-to-user-control
-            Point locationFromScreen = parent.PointToScreen(new Point(0, 0));
-            PresentationSource source = PresentationSource.FromVisual(parent);
+            Point locationFromScreen = userControl.PointToScreen(new Point(0, 0));
+            PresentationSource source = PresentationSource.FromVisual(userControl);
             Point targetPoints = source.CompositionTarget.TransformFromDevice.Transform(
                 locationFromScreen);
             Point focus = new Point();
-            focus.X = targetPoints.X + (parent.Width / 2.0);
-            focus.Y = targetPoints.Y + (parent.Height / 2.0);
+            focus.X = targetPoints.X + (userControl.Width / 2.0);
+            focus.Y = targetPoints.Y + (userControl.Height / 2.0);
             child.Top = focus.Y - (child.Height / 2.0);
             child.Left = focus.X - (child.Width / 2.0);
 
@@ -50,25 +63,24 @@ namespace WpfHelperClasses.Core {
                 child.Left = 0;
             }
 
-        }
-
-
-
-        public static void CenterToParent(this Window child, UserControl parent, Window AppWindow) {
-            child.CenterToParent(parent);
-            double appBottom = AppWindow.Top + AppWindow.Height;
+            double screenBottom = System.Windows.SystemParameters.WorkArea.Height;
             double childBottom = child.Top + child.Height;
-            if (childBottom > appBottom) {
-                child.Top -= (childBottom - appBottom);
+
+            // Now make sure it does not reach below the window in which it was called
+            Window userControlParentWindow = Window.GetWindow(userControl);
+            if (userControlParentWindow != null) {
+                double parentWindowBottom = userControlParentWindow.Top + userControlParentWindow.Height;
+                if (childBottom > parentWindowBottom) {
+                    child.Top -= (childBottom - parentWindowBottom);
+                }
             }
 
-            if (child.Left < 0) {
-                child.Left = 0;
+            // Now check if below screen bottom
+            childBottom = child.Top + child.Height;
+            if (childBottom > screenBottom) {
+                child.Top -= (childBottom - screenBottom);
             }
         }
-
-
-
 
         #endregion
 
