@@ -73,6 +73,7 @@ namespace WpfCustomControlLib.Core.UtilWindows {
 
         private void btnCancel_Click(object sender, RoutedEventArgs e) {
             this.languageFactory.SetCurrentLanguage(this.languageOnEntry);
+            this.Close();
         }
 
 
