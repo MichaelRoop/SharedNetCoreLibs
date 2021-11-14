@@ -1,10 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30002.166
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedNetCoreLibs", "SharedNetCoreLibs\SharedNetCoreLibs.csproj", "{B58B7798-FF93-4E6D-B85C-E87C80AEE3D4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfHelperClasses.Core", "WpfHelpers.Core\WpfHelperClasses.Core.csproj", "{002B8D88-112B-4F72-89A5-65D5EF0BFAED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommunicationStack.Net", "..\SharedNetLibs\CommunicationStack.Net\CommunicationStack.Net.csproj", "{CE2E93BB-57FF-4179-A7C5-035CE49FA2F3}"
@@ -23,10 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B58B7798-FF93-4E6D-B85C-E87C80AEE3D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B58B7798-FF93-4E6D-B85C-E87C80AEE3D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B58B7798-FF93-4E6D-B85C-E87C80AEE3D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B58B7798-FF93-4E6D-B85C-E87C80AEE3D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{002B8D88-112B-4F72-89A5-65D5EF0BFAED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{002B8D88-112B-4F72-89A5-65D5EF0BFAED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{002B8D88-112B-4F72-89A5-65D5EF0BFAED}.Release|Any CPU.ActiveCfg = Release|Any CPU
